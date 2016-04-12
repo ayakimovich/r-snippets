@@ -12,7 +12,8 @@ library(plyr)
 
 
 
-read_folder = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\"
+read_folder1 = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\"
+read_folder2 = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\"
 save_file = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\aggregation.csv"
 save_plot_file = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\aggregation.pdf"
 #set the PATH to perl interpreter for xls reader
@@ -70,23 +71,37 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 
 
 
-file_list = list.files(path = read_folder, pattern = ".*_binned_data.xls", all.files = FALSE, full.names = FALSE, recursive = FALSE, ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
-read_file_path = paste(read_folder, file_list[1], sep = "")
+file_list1 = list.files(path = read_folder1, pattern = ".*_binned_data.xls", all.files = FALSE, full.names = FALSE, recursive = FALSE, ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+file_list2 = list.files(path = read_folder2, pattern = ".*_binned_data.xls", all.files = FALSE, full.names = FALSE, recursive = FALSE, ignore.case = FALSE, include.dirs = FALSE, no.. = FALSE)
+read_file_path = paste(read_folder1, file_list[1], sep = "")
 binned_table_aggregation = read.xls(read_file_path, sheet = 1, header = TRUE, perl = perl)
 condition = gsub("binned_data.xls", "", file_list[1])
 condition = gsub("Bact", "", condition)
 condition = gsub("Vir", "", condition)
 binned_table_aggregation$Bact = strtoi(unlist(strsplit(condition, "_"))[1], base = 0L)
 binned_table_aggregation$Vir = strtoi(unlist(strsplit(condition, "_"))[2], base = 0L)
+binned_table_aggregation$dataset = 1
 
 for (i in 2:length(file_list)){
-  read_file_path = paste(read_folder, file_list[i], sep = "")
+  read_file_path = paste(read_folder1, file_list1[i], sep = "")
   binned_table = read.xls(read_file_path, sheet = 1, header = TRUE, perl = perl)
   condition = gsub("binned_data.xls", "", file_list[i])
   condition = gsub("Bact", "", condition)
   condition = gsub("Vir", "", condition)
   binned_table$Bact = strtoi(unlist(strsplit(condition, "_"))[1], base = 0L)
   binned_table$Vir = strtoi(unlist(strsplit(condition, "_"))[2], base = 0L)
+  binned_table$dataset = 1
+  binned_table_aggregation = rbind(binned_table_aggregation,binned_table)
+}
+for (i in 1:length(file_list2)){
+  read_file_path = paste(read_folder2, file_list1[i], sep = "")
+  binned_table = read.xls(read_file_path, sheet = 1, header = TRUE, perl = perl)
+  condition = gsub("binned_data.xls", "", file_list[i])
+  condition = gsub("Bact", "", condition)
+  condition = gsub("Vir", "", condition)
+  binned_table$Bact = strtoi(unlist(strsplit(condition, "_"))[1], base = 0L)
+  binned_table$Vir = strtoi(unlist(strsplit(condition, "_"))[2], base = 0L)
+  binned_table$dataset = 2
   binned_table_aggregation = rbind(binned_table_aggregation,binned_table)
 }
 
