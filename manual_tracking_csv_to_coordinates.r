@@ -2,9 +2,9 @@ library(gdata)
 
 # user defined read and write folder
 
-read_folder <- "D:\\AY\\140915_Particles_to_gfp_model\\tracking_csv\\"
+read_folder <- "R:\\tracking_coordinates\\"
 
-write_folder <- "D:\\AY\\140915_Particles_to_gfp_model\\tracking_cordinates\\"
+write_folder <- "R:\\tracking_coordinates\\"
 
 # get all the file names in the read folder and put them into an array
 
@@ -18,7 +18,7 @@ for (i in 1:length(file_list)){
   
   #read the table from the file
   tracking_table = read.table(read_file_path,
-                              sep="\t",
+                              sep=",",
                               header=TRUE)
   #formulate new file names by removing last 4 characters and adding a new ending
   write_file_path_x <- paste(write_folder, substr(file_list[i], 1, nchar(file_list[i])-4), "_x.txt", sep = "")
