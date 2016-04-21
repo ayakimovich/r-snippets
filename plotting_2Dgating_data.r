@@ -8,10 +8,6 @@ library(plyr)
 
 
 
-
-
-
-
 read_folder1 = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\"
 read_folder2 = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\"
 save_file = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\aggregation.csv"
@@ -19,7 +15,19 @@ save_plot_file = "\\\\130.60.211.239\\zinkernagel\\160329-15_CI_R\\analysis2\\ag
 #set the PATH to perl interpreter for xls reader
 perl <- "C:\\strawberry\\perl\\bin\\perl5.22.1.exe"
 
-
+sub_plot <- function(plot_table, means, sds, Vir, Bact, ox_breaks, oy_lims){
+  
+  p <- ggplot(plot_table, aes(Vir, means, fill = Vir)) + scale_fill_distiller(palette = "Greys")
+  limits <- aes(ymax = means + sds, ymin=means - sds) 
+  p <- p + theme(panel.background = element_blank(),
+                 #panel.border = element_rect(colour = "black", size=0.05),      
+                 text = element_text(size=plot_font_size, face = "bold"))
+  p <- p + scale_x_continuous(breaks = ox_breaks)
+  p <- p + geom_bar(stat="identity", position="dodge", colour="black") + facet_wrap(~ Bact, nrow = 1)
+  p <- p + geom_errorbar(limits, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
+  p <- p  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
+  return(p)
+}
 
 # Multiple plot function
 #
@@ -147,45 +155,48 @@ oy_breaks = c(0.00, 0.50, 1.00)
 ox_breaks = c(0, 1, 2, 3, 4, 5, 6, 7)
 error_bar_line_size = 0.75
 
-p1 <- ggplot(plot_table, aes(Vir, green_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
-limits <- aes(ymax = plot_table$green_mean + plot_table$green_sd, ymin=plot_table$green_mean - plot_table$green_sd) 
-p1 <- p1 + scale_x_continuous(breaks = ox_breaks)
-p1 <- p1 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
-p1 <- p1 + geom_errorbar(limits, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
-p1 <- p1 + theme(panel.background = element_blank())
-p1 <- p1 + theme(text = element_text(size=plot_font_size, face = "bold"))
-p1 <- p1  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
+#p1 <- ggplot(plot_table, aes(Vir, green_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
+#limits <- aes(ymax = plot_table$green_mean + plot_table$green_sd, ymin=plot_table$green_mean - plot_table$green_sd) 
+#p1 <- p1 + scale_x_continuous(breaks = ox_breaks)
+#p1 <- p1 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
+#p1 <- p1 + geom_errorbar(limits, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
+#p1 <- p1 + theme(panel.background = element_blank())
+#p1 <- p1 + theme(text = element_text(size=plot_font_size, face = "bold"))
+#p1 <- p1  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
 
 
-p2 <- ggplot(plot_table, aes(Vir, red_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
-limits2 <- aes(ymax = plot_table$red_mean + plot_table$red_sd, ymin=plot_table$red_mean - plot_table$red_sd) 
-p2 <- p2 + scale_x_continuous(breaks = ox_breaks)
-p2 <- p2 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
-p2 <- p2 + geom_errorbar(limits2, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
-p2 <- p2 + theme(panel.background = element_blank())
-p2 <- p2 + theme(text = element_text(size=plot_font_size, face = "bold"))
-p2 <- p2  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
+#p2 <- ggplot(plot_table, aes(Vir, red_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
+#limits2 <- aes(ymax = plot_table$red_mean + plot_table$red_sd, ymin=plot_table$red_mean - plot_table$red_sd) 
+#p2 <- p2 + scale_x_continuous(breaks = ox_breaks)
+#p2 <- p2 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
+#p2 <- p2 + geom_errorbar(limits2, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
+#p2 <- p2 + theme(panel.background = element_blank())
+#p2 <- p2 + theme(text = element_text(size=plot_font_size, face = "bold"))
+#p2 <- p2  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
 
 
-p3 <- ggplot(plot_table, aes(Vir, yellow_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
-limits3 <- aes(ymax = plot_table$yellow_mean + plot_table$yellow_sd, ymin=plot_table$yellow_mean - plot_table$yellow_sd) 
-p3 <- p3 + scale_x_continuous(breaks = ox_breaks)
-p3 <- p3 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
-p3 <- p3 + geom_errorbar(limits3, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
-p3 <- p3 + theme(panel.background = element_blank())
-p3 <- p3 + theme(text = element_text(size=plot_font_size, face = "bold"))
-p3 <- p3  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
+#p3 <- ggplot(plot_table, aes(Vir, yellow_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
+#limits3 <- aes(ymax = plot_table$yellow_mean + plot_table$yellow_sd, ymin=plot_table$yellow_mean - plot_table$yellow_sd) 
+#p3 <- p3 + scale_x_continuous(breaks = ox_breaks)
+#p3 <- p3 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
+#p3 <- p3 + geom_errorbar(limits3, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
+#p3 <- p3 + theme(panel.background = element_blank())
+#p3 <- p3 + theme(text = element_text(size=plot_font_size, face = "bold"))
+#p3 <- p3  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
 
 
-p4 <- ggplot(plot_table, aes(Vir, white_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
-limits4 <- aes(ymax = plot_table$white_mean + plot_table$white_sd, ymin=plot_table$white_mean - plot_table$white_sd) 
-p4 <- p4 + scale_x_continuous(breaks = ox_breaks)
-p4 <- p4 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
-p4 <- p4 + geom_errorbar(limits4, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
-p4 <- p4 + theme(panel.background = element_blank())
-p4 <- p4 + theme(text = element_text(size=plot_font_size, face = "bold"))
-p4 <- p4  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
-
+#p4 <- ggplot(plot_table, aes(Vir, white_mean, fill = Vir)) + scale_fill_distiller(palette = "Greys")
+#limits4 <- aes(ymax = plot_table$white_mean + plot_table$white_sd, ymin=plot_table$white_mean - plot_table$white_sd) 
+#p4 <- p4 + scale_x_continuous(breaks = ox_breaks)
+#p4 <- p4 + geom_bar(stat="identity", position="dodge") + facet_wrap(~ Bact, nrow = 1)
+#p4 <- p4 + geom_errorbar(limits4, stat="identity", position="dodge", width=0.25, size = error_bar_line_size)
+#p4 <- p4 + theme(panel.background = element_blank())
+#p4 <- p4 + theme(text = element_text(size=plot_font_size, face = "bold"))
+#p4 <- p4  + scale_y_continuous(limits = oy_lims, breaks= oy_breaks) #  + coord_cartesian(ylim = c(0, 1))
+p1 <- sub_plot(plot_table, plot_table$green_mean, plot_table$green_sd, Vir, Bact, ox_breaks, oy_lims)
+p2 <- sub_plot(plot_table, plot_table$red_mean, plot_table$red_sd, Vir, Bact, ox_breaks, oy_lims)
+p3 <- sub_plot(plot_table, plot_table$yellow_mean, plot_table$yellow_sd, Vir, Bact, ox_breaks, oy_lims)
+p4 <- sub_plot(plot_table, plot_table$white_mean, plot_table$white_sd, Vir, Bact, ox_breaks, oy_lims)
 
 pdf(save_plot_file)
 multiplot(p1, p2, p3, p4, cols=1)
